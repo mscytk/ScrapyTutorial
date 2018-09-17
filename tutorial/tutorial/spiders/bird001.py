@@ -11,7 +11,7 @@ class BirdsSpider(scrapy.Spider):
     def parse(self, response):
         for bird in response.xpath('//*[@id="species_table"]/tbody/tr'):
           yield {
-            'name' : bird.xpath('td[1]/a/text()').extract(),
-            'link' : bird.xpath('td[1]/a/@href').extract(),
-            'num' : bird.xpath('td[2]/text()').extract()
+            'name' : bird.xpath('td[1]/a/text()').extract_first(),
+            'link' : response.urljoin(bird.xpath('td[1]/a/@href').extract_first()),
+            'num' : bird.xpath('td[2]/text()').extract_first()
           }
