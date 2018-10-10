@@ -1,6 +1,5 @@
 import scrapy
 
-
 class BirdsSpider(scrapy.Spider):
     name = "birds002"
 
@@ -9,12 +8,15 @@ class BirdsSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
+        counter = 0
         for href in response.xpath('//*[@id="species_table"]/tbody/tr/td[1]/a/@href').extract():
+            counter = counter + int(response.xpath('//*[@id="species_table"]/tbody/tr/td[2]/text()').extract_first())
             yield scrapy.Request(response.urljoin(href), callback=self.parse_author)
 
+        print('count: ' + str(counter))
+
     def parse_author(self, response):
-#        print(response.xpath('//*[@id="contents"]/div[4]/h2/a/text()').extract())
-        # <a>タグがテキストを持っている場合「すべての写真を見る」リンクがあると判断し、そのリンクをリクエストする
+        # <a>タグがテキストを持っている場合「すべての写真を見る」リンクがあると判断し、そのリンクでリクエストする
         if response.xpath('//*[@id="contents"]/div[4]/p/a/text()').extract_first() is not None:
             print(response.xpath('//*[@id="contents"]/div[4]/p/a/text()').extract())
             l = len(response.xpath('//*[@id="contents"]/div[4]/p/a'))
@@ -26,7 +28,7 @@ class BirdsSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(card), callback=self.req_card)
 
     def req_card(self, response):
-        # 受け取ったクエリでresponseから抽出して、strip(トリムっぽいこと)する
+        # 受け取ったクエリでresponseから抽出する
         def extract_with_xpath(query):
             return response.xpath(query).extract_first()
 
