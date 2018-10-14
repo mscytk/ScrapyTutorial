@@ -15,8 +15,6 @@ from scrapy.utils.misc import md5sum
 # refer: https://stackoverflow.com/questions/31779995/how-to-give-custom-name-to-images-when-downloading-through-scrapy
 class MyImagesPipeline(ImagesPipeline):
     def get_media_requests(self, item, info):
-        #for image_url in item:
-#        print(item['jpgurl'])
         yield scrapy.Request(item['jpgurl'], meta={'birdname': item["birdname"]})
 
     def image_downloaded(self, response, request, info):

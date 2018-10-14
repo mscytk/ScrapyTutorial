@@ -1,19 +1,20 @@
 import scrapy
 
 class BirdsSpider(scrapy.Spider):
+    # 実行するときの識別子
     name = "birds002"
 
+    # 起点(探査を開始する)URL
     start_urls = [
       'https://www.birdfan.net/pg/kind/',
     ]
 
     def parse(self, response):
-        counter = 0
-        for href in response.xpath('//*[@id="species_table"]/tbody/tr/td[1]/a/@href').extract():
-            counter = counter + int(response.xpath('//*[@id="species_table"]/tbody/tr/td[2]/text()').extract_first())
-            yield scrapy.Request(response.urljoin(href), callback=self.parse_author)
+        # start_urlsのリクエストに対するレスポンスが"response"に渡されてくる
 
-        print('count: ' + str(counter))
+        # ちょうど、野鳥一覧のtableタグがあったので、それを回し、各td内のリンク先(href)をたどるようにした。
+        for href in response.xpath('//*[@id="species_table"]/tbody/tr/td[1]/a/@href').extract():
+            yield scrapy.Request(response.urljoin(href), callback=self.parse_author)
 
     def parse_author(self, response):
         # <a>タグがテキストを持っている場合「すべての写真を見る」リンクがあると判断し、そのリンクでリクエストする

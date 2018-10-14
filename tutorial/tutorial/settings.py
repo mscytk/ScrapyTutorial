@@ -95,4 +95,4 @@ IMAGES_STORE = 'D:/savedImages'
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # masaru.k added
-LOG_LEVEL = 'WARNING'
+#LOG_LEVEL = 'WARNING'
